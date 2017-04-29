@@ -1,6 +1,7 @@
 package com.avinash.fileexplorer10;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import static android.R.attr.path;
 import static com.avinash.fileexplorer10.R.id.rv;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         int s = FileList.size();
 
 
+    }
+
+    public static String getFileExt(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
     }
 
 
@@ -83,19 +90,48 @@ public class MainActivity extends AppCompatActivity {
             return new VH(v);
         }
 
+
         @Override
         public void onBindViewHolder(final VH holder, int position) {
-            String str = FileList.get(position);
+           final String str = FileList.get(position);
             holder.tv.setText(str);
             holder.CV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        Intent intent = new Intent(MainActivity.this, Folder_Intent.class);
-                        intent.putExtra("path", FilePath + "/" + holder.tv.getText());
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e("EXC", e.getMessage());
+
+
+                        File sel = new File(path + "/" + str);
+                        if(sel.isDirectory()) {
+                            Intent intent = new Intent(MainActivity.this, Folder_Intent.class);
+                            intent.putExtra("path", path + "/" + holder.tv.getText());
+                            startActivity(intent);
+                        }
+                        else {
+                            Intent intent = new Intent();
+                            String extension = getFileExt(str);
+                            //Add support for more file extensions
+                            if(extension.equals("pdf"))
+                            {
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(sel),"application/pdf");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                Intent chooser =Intent.createChooser(intent, " Open using");
+                                if(intent.resolveActivity(getPackageManager())!=null)
+                                    startActivity(chooser);
+                                else
+                                {
+                                    Toast.makeText(MainActivity.this,"Cannot open", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e("EXC",e.getMessage());
                     }
                 }
             });
