@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             CV= (CardView) itemView.findViewById(R.id.CV);
         }
     }
-    private class Adapter extends RecyclerView.Adapter<VH>{
+    public class Adapter extends RecyclerView.Adapter<VH>{
 
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
