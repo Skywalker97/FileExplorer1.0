@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
     public class Adapter extends RecyclerView.Adapter<VH> {
 
+
+
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater LI = getLayoutInflater();
@@ -95,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(final VH holder, int position) {
            final String str = FileList.get(position);
             holder.tv.setText(str);
+
+            holder.itemView.setLongClickable(true);
+            holder.itemView.setClickable(true);
             holder.CV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -135,6 +140,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+          holder.CV.setOnLongClickListener(new View.OnLongClickListener()
+                                     {
+                                         @Override
+                                         public boolean onLongClick(View v)
+                                         {
+                                           Toast.makeText(MainActivity.this,"Long Click Triggered",Toast.LENGTH_LONG).show();
+                                             return false;
+                                         }
+                                     }
+            );
+
+
         }
 
             @Override
@@ -145,4 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 }
