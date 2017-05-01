@@ -3,7 +3,6 @@ package com.avinash.fileexplorer10;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +18,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-import static android.R.attr.path;
+import static android.os.Environment.getExternalStorageDirectory;
+import static android.os.Environment.isExternalStorageRemovable;
 import static com.avinash.fileexplorer10.R.id.rv;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     Adapter fileAdapter;
     String FilePath;
-
+    FileOps FO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +41,14 @@ public class MainActivity extends AppCompatActivity {
         RV.setAdapter(fileAdapter);
         RV.setLayoutManager(new LinearLayoutManager(this));
         int s = FileList.size();
-
+        FO = new FileOps();
+       /* FO.copyFile(getExternalStorageDirectory().toString() + "/" + "Han Solo" + "/",
+                "Timbaland-Way.mp3",
+                getExternalStorageDirectory().toString() + "/" + "New Folder" + "/");
+        */
+        FO.moveFile(getExternalStorageDirectory().toString() + "/" + "New Folder" + "/",
+                "av",
+                getExternalStorageDirectory().toString() + "/" + "Han Solo" + "/" );
 
     }
 
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Media not mounted", "Mount SD card");
         }
         else*/
-         FilePath = Environment.getExternalStorageDirectory().toString();
+         FilePath = getExternalStorageDirectory().toString();
         Log.d("GFL",FilePath);
         File sd = new File(FilePath);
         File[] sdDirList = sd.listFiles();
@@ -104,12 +111,24 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-
-
-                        File sel = new File(path + "/" + str);
+                        File sel = new File(FilePath + "/" + str);
                         if(sel.isDirectory()) {
                             Intent intent = new Intent(MainActivity.this, Folder_Intent.class);
-                            intent.putExtra("path", path + "/" + holder.tv.getText());
+                            intent.putExtra("path", FilePath + "/" + holder.tv.getText());
+                          FO.CreateDir(FilePath,"New Folder");
+                            if(!isExternalStorageRemovable ())
+                                Log.d("SD card", "Detected");
+
+                         /*  File Dir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() +File.separator + "Han Solo");
+                            if(!Dir.mkdirs())
+                            {
+                                System.out.println("Not Created");
+                            }*/
+                         File Dir2 = new File(getFilesDir().getAbsoluteFile() + File.separator + "Luke Skywalker");
+                            if(!Dir2.mkdirs())
+                            {
+                                System.out.println("Not Created");
+                            }
                             startActivity(intent);
                         }
                         else {
@@ -141,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-          holder.CV.setOnLongClickListener(new View.OnLongClickListener()
+        /*  holder.CV.setOnLongClickListener(new View.OnLongClickListener()
                                      {
                                          @Override
                                          public boolean onLongClick(View v)
@@ -151,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                                          }
                                      }
             );
-
+*/
 
         }
 

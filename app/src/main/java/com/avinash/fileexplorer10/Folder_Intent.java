@@ -115,7 +115,7 @@ public class Folder_Intent extends AppCompatActivity {
                             intent.setAction(Intent.ACTION_VIEW);
                                intent.setDataAndType(Uri.fromFile(sel),"application/pdf");
                                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                               Intent chooser =Intent.createChooser(intent, " Open using");
+                               Intent chooser = Intent.createChooser(intent, " Open using");
                                if(intent.resolveActivity(getPackageManager())!=null)
                                    startActivity(chooser);
                                else
