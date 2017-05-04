@@ -85,6 +85,7 @@ public class FileOps {
         try {
             // delete the original file
             new File(inputPath + inputFile).delete();
+            Log.d("tag",inputFile + " Deleted");
         }
         catch (Exception e) {
             Log.e("tag", e.getMessage());
@@ -129,6 +130,8 @@ public class FileOps {
         }
 
     }
+
+
 
 
 

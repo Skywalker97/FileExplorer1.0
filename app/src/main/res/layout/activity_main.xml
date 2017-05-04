@@ -6,13 +6,74 @@
     android:layout_height="match_parent"
     tools:context="com.avinash.fileexplorer10.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:id="@+id/rv"/>
+        android:layout_margin="12dp"
+        android:id="@+id/CV"
+        android:layout_height="62dp"
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            >
+
+            <ImageView
+                android:id="@+id/icon1"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_folder_black_24dp" />
+
+            <TextView
+                android:id="@+id/tvFname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="8dp"
+                android:text="Internal Storage"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+        android:layout_width="match_parent"
+        android:id="@+id/CV2"
+        android:layout_height="62dp"
+
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/CV"
+        android:layout_alignLeft="@+id/CV"
+        android:layout_alignStart="@+id/CV">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            >
+
+            <ImageView
+                android:id="@+id/icon2"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_folder_black_24dp" />
+
+            <TextView
+                android:id="@+id/tvFname2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="8dp"
+                android:text="External Storage"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </RelativeLayout>

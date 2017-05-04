@@ -18,6 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Folder_Intent"></activity>
+        <activity android:name=".External_Storage"></activity>
+        <activity android:name=".Internal_Storage"></activity>
     </application>
 
 </manifest>

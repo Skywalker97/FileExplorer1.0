@@ -1,16 +1,23 @@
 package com.avinash.fileexplorer10;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,8 +34,10 @@ public class Folder_Intent extends AppCompatActivity {
     ArrayList<String>FileList;
     RecyclerView RV;
     recyclerView RView;
-
-
+    int Paste;
+    FileOps FO;
+    Intent intent;
+    Bundle extras;
 
 
 
@@ -38,8 +47,12 @@ public class Folder_Intent extends AppCompatActivity {
         setContentView(R.layout.intent_folder);
 
         RV= (RecyclerView) findViewById(R.id.RV);
-        Intent intent=getIntent();
-        path=intent.getStringExtra("path");
+         intent=getIntent();
+         extras = intent.getExtras();
+        path=extras.getString("path");
+        Paste=extras.getInt("Paste",0);
+        System.out.println(Paste);
+        FO = new FileOps();
         Log.d("OC", "onCreate: "+path);
         FileList=new ArrayList<>();
         GenerateFileList();
@@ -47,6 +60,90 @@ public class Folder_Intent extends AppCompatActivity {
         RV.setLayoutManager(new LinearLayoutManager(this));
         RV.setAdapter(RView);
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions, menu);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Toast.makeText(Folder_Intent.this, "You selected search", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_paste:
+            {
+                pasteFile();
+                return true;
+            }
+
+
+            case R.id.action_CreateDir:
+            {AlertDialog.Builder builder = new AlertDialog.Builder(Folder_Intent.this);
+                builder.setTitle("Create new folder");
+
+
+                final EditText input = new EditText(Folder_Intent.this);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT );
+
+                builder.setView(input);
+
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       String name = input.getText().toString();
+                       // inpText.setText(m_Text);
+                        FO.CreateDir(path,name);
+                        Intent intent = new Intent(Folder_Intent.this, Folder_Intent.class);
+                        intent.putExtra("path",path);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+
+
+return true;
+            }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+public void pasteFile()
+{
+    if(Paste==0)
+        Toast.makeText(Folder_Intent.this, "No file to be pasted!!!", Toast.LENGTH_SHORT).show();
+    else if(Paste==1) {
+        String InputPath = extras.getString("InputPath");
+       String InputName= extras.getString("InputName");
+        FO.copyFile(InputPath,InputName,path);
+    }
+    else if(Paste==2) {
+        String InputPath = extras.getString("InputPath");
+        String InputName= extras.getString("InputName");
+        FO.moveFile(InputPath,InputName,path);
+    }
+
+}
 
 
 
@@ -94,6 +191,10 @@ public class Folder_Intent extends AppCompatActivity {
         public void onBindViewHolder(final VH holder, int position) {
             final String s=FileList.get(position);
             holder.tv.setText(s);
+
+            final Bundle b = new Bundle();
+            b.putString("path",path);
+
             holder.cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,6 +224,33 @@ public class Folder_Intent extends AppCompatActivity {
                                    Toast.makeText(Folder_Intent.this,"Cannot open", Toast.LENGTH_LONG).show();
                                }
                            }
+                           else if(extension.equals("txt")) {
+                               intent.setAction(Intent.ACTION_VIEW);
+                               intent.setDataAndType(Uri.fromFile(sel), "text/*");
+                               // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                               Intent chooser = Intent.createChooser(intent, " Open using");
+                               if (intent.resolveActivity(getPackageManager()) != null)
+                                   startActivity(chooser);
+                               else {
+                                   Toast.makeText(Folder_Intent.this, "Cannot open", Toast.LENGTH_LONG).show();
+                               }
+                           }
+
+
+                               else if(extension.equals("png")|| extension.equals("jpg") || extension.equals("jpeg"))
+                           {
+                               intent.setAction(Intent.ACTION_VIEW);
+                               intent.setDataAndType(Uri.fromFile(sel),"image/*");
+                               // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                               Intent chooser = Intent.createChooser(intent, " Open using");
+                               if(intent.resolveActivity(getPackageManager())!=null)
+                                   startActivity(chooser);
+                               else
+                               {
+                                   Toast.makeText(Folder_Intent.this,"Cannot open", Toast.LENGTH_LONG).show();
+                               }
+
+                           }
 
 
                        }
@@ -134,6 +262,60 @@ public class Folder_Intent extends AppCompatActivity {
                     }
                 }
             });
+
+            holder.cv.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(Folder_Intent.this,"Long Click Triggered",Toast.LENGTH_LONG).show();
+                    //final CharSequence colors[] = new CharSequence[] {"red", "green", "blue", "black"};
+                    final CharSequence options[] = new CharSequence[] {"Move", "Share", "Copy", "Properties", "Delete"};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("Options");
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(Folder_Intent.this, "You Clicked : " + options[which], Toast.LENGTH_SHORT).show();
+                            if(options[which].equals("Copy"))
+                            {
+                                b.putInt("Paste", 1);
+                                String InputPath = path;
+                                String InputName = s;
+                                b.putString("InputPath",InputPath);
+                                b.putString("InputName",InputName);
+                                Log.d("tag","Copied");
+
+                            }
+                            else
+                            if(options[which].equals("Delete"))
+                            {
+                                FO.deleteFile(path, s);
+                                //Toast.makeText(Internal_Storage.this, str + " Deleted", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            if(options[which].equals("Move"))
+                            {
+                                b.putInt("Paste", 2);
+                                String InputPath = path;
+                                String InputName = s;
+                                b.putString("InputPath",InputPath);
+                                b.putString("InputName",InputName);
+                                Log.d("tag","Copied");
+                            }
+
+
+
+                        }
+                    });
+                    builder.show();
+
+                    return false;
+                }
+            });
+
+
+
+
         }
 
         @Override
