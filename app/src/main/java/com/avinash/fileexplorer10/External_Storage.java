@@ -267,6 +267,33 @@ public class External_Storage extends AppCompatActivity {
             final String str = FileList.get(position);
             holder.tv.setText(str);
 
+            File selc = new File(FilePath + "/" + str);
+            String extension = getFileExt(str);
+            if(selc.isDirectory()) {
+                holder.iv.setImageResource(R.mipmap.folder256);
+            }
+            else {
+                if (extension.equals("pdf")) {
+                    holder.iv.setImageResource(R.mipmap.pdf256);
+                } else if (extension.equals("jpeg") || extension.equals("jpg")) {
+                    holder.iv.setImageResource(R.mipmap.jpg256);
+                } else if (extension.equals("png")) {
+                    holder.iv.setImageResource(R.mipmap.png);
+                } else if (extension.equals("docx") || extension.equals("doc")) {
+                    holder.iv.setImageResource(R.mipmap.docs);
+                } else if (extension.equals("xlsx")) {
+                    holder.iv.setImageResource(R.mipmap.xls);
+                } else if (extension.equals("mp4") || extension.equals("mpeg") || extension.equals("wmv") || extension.equals("3gp") || extension.equals("mkv")) {
+                    holder.iv.setImageResource(R.mipmap.vid);
+                } else if (extension.equals("mp3") || extension.equals("ogg")) {
+                    holder.iv.setImageResource(R.mipmap.music3);
+                } else if (extension.equals("ppt") || extension.equals("pptx")) {
+                    holder.iv.setImageResource(R.mipmap.ppt);
+                } else {
+                    holder.iv.setImageResource(R.mipmap.file);
+                }
+            }
+
             holder.itemView.setLongClickable(true);
             holder.itemView.setClickable(true);
             holder.CV.setOnClickListener(new View.OnClickListener() {
@@ -310,9 +337,77 @@ public class External_Storage extends AppCompatActivity {
                                     Toast.makeText(External_Storage.this,"Cannot open", Toast.LENGTH_LONG).show();
                                 }
                             }
+                            else if(extension.equals("txt")) {
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(sel), "text/*");
+                                // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                Intent chooser = Intent.createChooser(intent, " Open using");
+                                if (intent.resolveActivity(getPackageManager()) != null)
+                                    startActivity(chooser);
+                                else {
+                                    Toast.makeText(External_Storage.this, "Cannot open", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+
+                            else if(extension.equals("png")|| extension.equals("jpg") || extension.equals("jpeg"))
+                            {
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(sel),"image/*");
+                                // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                Intent chooser = Intent.createChooser(intent, " Open using");
+                                if(intent.resolveActivity(getPackageManager())!=null)
+                                    startActivity(chooser);
+                                else
+                                {
+                                    Toast.makeText(External_Storage.this,"Cannot open", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                            else if(extension.equals("mp4")||extension.equals("mpeg")||extension.equals("wmv")||extension.equals("3gp")||extension.equals("mkv"))
+                            {
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(sel),"video/*");
+                                // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                Intent chooser = Intent.createChooser(intent, " Open using");
+                                if(intent.resolveActivity(getPackageManager())!=null)
+                                    startActivity(chooser);
+                                else
+                                {
+                                    Toast.makeText(External_Storage.this,"Cannot open", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                            else if(extension.equals("pptx")||extension.equals("ppt")||extension.equals("docx")||extension.equals("doc")||extension.equals("xlsx"))
+                            {
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(sel),"application/*");
+                                // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                Intent chooser = Intent.createChooser(intent, " Open using");
+                                if(intent.resolveActivity(getPackageManager())!=null)
+                                    startActivity(chooser);
+                                else
+                                {
+                                    Toast.makeText(External_Storage.this,"Cannot open", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                            else{
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(sel),"application/*");
+                                // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                Intent chooser = Intent.createChooser(intent, " Open using");
+                                if(intent.resolveActivity(getPackageManager())!=null)
+                                    startActivity(chooser);
+                                else
+                                {
+                                    Toast.makeText(External_Storage.this,"Cannot open", Toast.LENGTH_LONG).show();
+                                }
+                            }
 
 
                         }
+
 
                     }
                     catch (Exception e)
